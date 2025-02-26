@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réservation confirmée</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Inclure votre navbar ici -->
+  
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Réservation confirmée !</h4>
+          </div>
+          <div class="card-body">
+            <div class="text-center mb-4">
+              <h2><%= event.title %></h2>
+              <p class="lead">
+                Le <%= new Date(event.date).toLocaleDateString('fr-FR') %> à <%= event.location %>
+              </p>
+            </div>
+            
+            <div class="alert alert-success">
+              <p>Un email de confirmation avec votre QR code a été envoyé à votre adresse email.</p>
+              <% if (emailPreviewUrl) { %>
+                <div class="alert alert-info mt-4">
+                  <p><strong>Mode test :</strong> Vous pouvez voir l'email de confirmation ici :</p>
+                  <a href="<%= emailPreviewUrl %>" target="_blank" class="btn btn-info">Voir l'email de confirmation</a>
+                </div>
+              <% } %>
+            </div>
+            
+            <div class="text-center my-4">
+              <p class="mb-2">Voici votre QR code d'accès :</p>
+              <img src="<%= qrCodeDataUrl %>" alt="QR Code" class="img-fluid" style="max-width: 250px;">
+              <p class="mt-2 text-muted">Présentez ce QR code à l'entrée de l'événement</p>
+            </div>
+            
+            <div class="mt-4">
+              <a href="/user/reservation" class="btn btn-outline-primary">Voir mes réservations</a>
+              <a href="/" class="btn btn-outline-secondary">Retour à l'accueil</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .welcome-banner {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .events-section {
+            margin-top: 30px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .event-info {
+            padding: 15px;
+        }
+
+        .event-title {
+            font-size: 1.2em;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .logout-button {
+            padding: 8px 16px;
+            background-color: #f44336;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .view-all-button {
+            display: block;
+            width: fit-content;
+            margin: 30px auto;
+            padding: 12px 24px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .notification-dropdown {
+    position: relative;
+    margin-right: 15px;
+  }
+  
+  .notification-icon {
+    position: relative;
+    color: #333;
+    display: inline-block;
+    text-decoration: none;
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    min-width: 1rem;
+    text-align: center;
+    display: none; /* Hidden by default */
+  }
+  
+  .notification-badge.show {
+    display: inline-block;
+  }
+  
+  .notification-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 300px;
+    background-color: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+  }
+  
+  .notification-dropdown-menu.show {
+    display: block;
+  }
+  
+  .notification-header {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-title {
+    margin-bottom: 0;
+  }
+  
+  .notification-view-all {
+    font-size: 0.8rem;
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .notification-body {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.2s;
+  }
+  
+  .notification-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .notification-item.unread {
+    background-color: #f0f8ff;
+  }
+  
+  .notification-item.unread:hover {
+    background-color: #e6f3ff;
+  }
+  
+  .notification-date {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+  }
+  
+  .notification-message {
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .notification-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-actions a, 
+  .notification-actions button {
+    font-size: 0.8rem;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007bff;
+  }
+  
+  .notification-loading {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.85rem;
+  }
+  
+  .notification-empty {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+  }
+    </style>
+</head>
+<body>
+    <div class="welcome-banner">
+        <div>
+            <h1>Bienvenue, <%= user.username %></h1>
+        </div>
+        <div>
+            <a href="/user/events/history" class="action-button blue-button">Historique des événements</a>
+            <a href="/reservations/my-reservations" style="padding: 8px 16px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; margin-right: 10px;">Mes réservations</a>
+            <a href="/auth/logout" class="logout-button">Se déconnecter</a>
+        </div>
+        <div class="notification-dropdown">
+            <a href="#" class="notification-icon" id="notification-dropdown-toggle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+              </svg>
+              <span class="notification-badge" id="notification-badge">0</span>
+            </a>
+            
+            <div class="notification-dropdown-menu" id="notification-dropdown-menu">
+              <div class="notification-header">
+                <h6 class="notification-title">Notifications</h6>
+                <a href="/notifications" class="notification-view-all">Voir tout</a>
+              </div>
+              
+              <div class="notification-body" id="notification-list">
+                <div class="notification-loading">
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                  </div>
+                  <span>Chargement des notifications...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+
+    <div class="events-section">
+        <h2>Événements à venir</h2>
+        
+        <div class="events-grid">
+            <% events.forEach(event => { %>
+                <!-- Remplacé la div avec onclick par un lien a -->
+                <a href="/events/<%= event._id %>" class="event-card">
+                    <img src="<%= event.image %>" alt="<%= event.title %>" class="event-image">
+                    <div class="event-info">
+                        <h3 class="event-title"><%= event.title %></h3>
+                        <p><strong>Date:</strong> <%= new Date(event.date).toLocaleDateString('fr-FR') %></p>
+                        <p><strong>Lieu:</strong> <%= event.location %></p>
+                        <p><strong>Catégorie:</strong> <%= event.category %></p>
+                        <p><strong>Organisé par:</strong> 
+                            <%= event.organizer ? event.organizer.organizationName : 'Organisateur inconnu' %>
+                        </p>
+                    </div>
+                </a>
+            <% }); %>
+        </div>
+
+        <a href="/events/all" class="view-all-button">Voir tous les événements</a>
+    </div>
+    <script>
+        // Script à inclure dans les pages où le composant de notification est utilisé
+document.addEventListener('DOMContentLoaded', function() {
+  const notificationToggle = document.getElementById('notification-dropdown-toggle');
+  const notificationMenu = document.getElementById('notification-dropdown-menu');
+  const notificationBadge = document.getElementById('notification-badge');
+  const notificationList = document.getElementById('notification-list');
+  
+  // Fonction pour formater la date
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now - date;
+    
+    // Moins d'une heure
+    if (diff < 60 * 60 * 1000) {
+      const minutes = Math.floor(diff / (60 * 1000));
+      return `Il y a ${minutes} minute${minutes > 1 ? 's' : ''}`;
+    } 
+    // Moins d'un jour
+    else if (diff < 24 * 60 * 60 * 1000) {
+      const hours = Math.floor(diff / (60 * 60 * 1000));
+      return `Il y a ${hours} heure${hours > 1 ? 's' : ''}`;
+    } 
+    // Moins d'une semaine
+    else if (diff < 7 * 24 * 60 * 60 * 1000) {
+      const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+      return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
+    } 
+    // Sinon date complète
+    else {
+      return date.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+  }
+  
+  // Fonction pour charger les notifications
+  function loadNotifications() {
+    fetch('/notifications/unread-count')
+      .then(response => response.json())
+      .then(data => {
+        // Mettre à jour le badge
+        if (data.unreadCount > 0) {
+          notificationBadge.textContent = data.unreadCount;
+          notificationBadge.classList.add('show');
+        } else {
+          notificationBadge.classList.remove('show');
+        }
+      })
+      .catch(error => console.error('Erreur:', error));
+  }
+  
+  // Fonction pour charger les détails des notifications
+  function loadNotificationDetails() {
+    notificationList.innerHTML = `
+      <div class="notification-loading">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <span>Chargement des notifications...</span>
+      </div>
+    `;
+    
+    fetch('/api/notifications/recent')
+      .then(response => response.json())
+      .then(data => {
+        if (data.notifications && data.notifications.length > 0) {
+          let html = '';
+          
+          data.notifications.forEach(notification => {
+            html += `
+              <div class="notification-item ${!notification.read ? 'unread' : ''}" data-id="${notification._id}">
+                <div class="notification-date">${formatDate(notification.createdAt)}</div>
+                <div class="notification-message">${notification.message}</div>
+                <div class="notification-actions">
+                  ${notification.event ? `<a href="/events/${notification.event}" class="notification-action-view">Voir l'événement</a>` : ''}
+                  ${!notification.read ? `<button class="notification-action-mark-read" data-id="${notification._id}">Marquer comme lu</button>` : ''}
+                </div>
+              </div>
+            `;
+          });
+          
+          notificationList.innerHTML = html;
+          
+          // Ajouter les gestionnaires d'événements pour "Marquer comme lu"
+          document.querySelectorAll('.notification-action-mark-read').forEach(button => {
+            button.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              const notificationId = this.dataset.id;
+              
+              fetch(`/notifications/${notificationId}/read`, {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                }
+              })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    // Mettre à jour l'interface
+                    const item = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                    item.classList.remove('unread');
+                    this.remove();
+                    
+                    // Mettre à jour le badge
+                    loadNotifications();
+                  }
+                })
+                .catch(error => console.error('Erreur:', error));
+            });
+          });
+        } else {
+          notificationList.innerHTML = `
+            <div class="notification-empty">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bell-slash" viewBox="0 0 16 16">
+                <path d="M5.164 14H15c-1.5-1-2-5.902-2-7 0-.264-.02-.523-.06-.776L5.164 14zm6.288-10.617A4.988 4.988 0 0 0 8.995 2.1a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 7c0 .898-.335 4.342-1.278 6.113l9.73-9.73zM10 15a2 2 0 1 1-4 0h4zm-9.375.625a.53.53 0 0 0 .75.75l14.75-14.75a.53.53 0 0 0-.75-.75L.625 15.625z"/>
+              </svg>
+              <p>Aucune notification</p>
+            </div>
+          `;
+        }
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+        notificationList.innerHTML = `
+          <div class="notification-empty">
+            <p>Impossible de charger les notifications</p>
+          </div>
+        `;
+      });
+  }
+  
+  // Gestionnaire d'événement pour ouvrir/fermer le menu
+  notificationToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const isShown = notificationMenu.classList.contains('show');
+    
+    if (!isShown) {
+      notificationMenu.classList.add('show');
+      loadNotificationDetails();
+    } else {
+      notificationMenu.classList.remove('show');
+    }
+  });
+  
+  // Fermer le menu quand on clique ailleurs
+  document.addEventListener('click', function(e) {
+    if (!notificationToggle.contains(e.target) && !notificationMenu.contains(e.target)) {
+      notificationMenu.classList.remove('show');
+    }
+  });
+  
+  // Charger les notifications au chargement de la page
+  loadNotifications();
+  
+  // Mettre à jour les notifications toutes les minutes
+  setInterval(loadNotifications, 60000);
+});
+    </script>
+</body>
+</html>

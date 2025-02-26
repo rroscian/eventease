@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Créer un Événement</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="url"],
+    input[type="datetime-local"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    textarea {
+      height: 150px;
+      resize: vertical;
+    }
+    
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+      text-decoration: none;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Créer un Nouvel Événement</h1>
+  
+  <form action="/organizer/event/create" method="POST">
+    <div class="form-group">
+      <label for="title">Titre de l'événement:</label>
+      <input type="text" id="title" name="title" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" required></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label for="image">URL de l'image:</label>
+      <input type="url" id="image" name="image" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="location">Localisation:</label>
+      <input type="text" id="location" name="location" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="category">Catégorie:</label>
+      <select id="category" name="category" required>
+        <option value="">Sélectionnez une catégorie</option>
+        <option value="Concert">Concert</option>
+        <option value="Festival">Festival</option>
+        <option value="Théâtre">Théâtre</option>
+        <option value="Sport">Sport</option>
+        <option value="Exposition">Exposition</option>
+        <option value="Conférence">Conférence</option>
+        <option value="Autre">Autre</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="date">Date et heure:</label>
+      <input type="datetime-local" id="date" name="date" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="capacity">Capacité:</label>
+      <input type="number" id="capacity" name="capacity" required>
+    </div>
+    
+    <button type="submit">Créer l'événement</button>
+  </form>
+  
+  <a href="/organizer/events" class="back-link">Retour à mes événements</a>
+</body>
+</html>

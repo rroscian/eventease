@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    .welcome-message {
+      font-size: 1.2em;
+      color: #333;
+    }
+    
+    .events-section {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .event-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      transition: transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .event-title {
+      font-size: 1.2em;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    .event-info {
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .view-all-button {
+      display: block;
+      width: fit-content;
+      margin: 30px auto;
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      text-align: center;
+      transition: background-color 0.3s;
+    }
+
+    .view-all-button:hover {
+      background-color: #45a049;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+    
+    .auth-buttons {
+      text-align: center;
+      margin: 40px 0;
+    }
+    
+    .auth-buttons a {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 0 10px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    
+    .auth-buttons a:hover {
+      background-color: #45a049;
+    }
+    
+    .logout-button {
+      padding: 8px 16px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .logout-button:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dans la section des boutons d'authentification -->
+<div class="header">
+  <div class="welcome-message">
+    Bienvenue sur notre site événementiel
+  </div>
+  <div class="notification-dropdown">
+    <a href="#" class="notification-icon" id="notification-dropdown-toggle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+        <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+      </svg>
+      <span class="notification-badge" id="notification-badge">0</span>
+    </a>
+    
+    <div class="notification-dropdown-menu" id="notification-dropdown-menu">
+      <div class="notification-header">
+        <h6 class="notification-title">Notifications</h6>
+        <a href="/notifications" class="notification-view-all">Voir tout</a>
+      </div>
+      
+      <div class="notification-body" id="notification-list">
+        <div class="notification-loading">
+          <div class="spinner-border spinner-border-sm text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+          <span>Chargement des notifications...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <% if (typeof user !== 'undefined' && user) { %>
+    <div class="user-info">
+      <p>Connecté en tant que: <%= user.username %></p>
+      <% if (user.role === 'organizer') { %>
+        <p>Organisation: <%= user.organizationName %></p>
+        <a href="/organizer/logout" class="logout-button">Se déconnecter</a>
+      <% } else { %>
+        <a href="/auth/logout" class="logout-button">Se déconnecter</a>
+      <% } %>
+    </div>
+  <% } else { %>
+    <div class="auth-buttons">
+      <a href="/auth/login">Se connecter en tant qu'utilisateur</a>
+      <a href="/organizer/login">Se connecter en tant qu'organisateur</a>
+    </div>
+    <div class="auth-buttons">
+      <a href="/auth/register">S'inscrire en tant qu'utilisateur</a>
+      <a href="/organizer/register">S'inscrire en tant qu'organisateur</a>
+    </div>
+  <% } %>
+</div>
+  <div class="events-section">
+    <h2>Événements à venir</h2>
+    
+    <% if (typeof events !== 'undefined' && events.length > 0) { %>
+      <div class="events-grid">
+        <% try { %>
+          <% events.forEach(event => { %>
+            <!-- Remplacé la div par un lien a -->
+            <a href="/events/<%= event._id %>" class="event-card">
+              <% if (event.image) { %>
+                <img src="<%= event.image %>" alt="<%= event.title %>" class="event-image">
+              <% } %>
+              <h3 class="event-title"><%= event.title %></h3>
+              <div class="event-info">
+                <p><strong>Date:</strong> <%= new Date(event.date).toLocaleDateString('fr-FR') %></p>
+                <p><strong>Lieu:</strong> <%= event.location %></p>
+                <p><strong>Catégorie:</strong> <%= event.category %></p>
+                <p><strong>Organisé par:</strong> 
+                  <%= event.organizer ? (event.organizer.organizationName || 'Organisateur') : 'Organisateur inconnu' %>
+                </p>
+              </div>
+            </a>
+          <% }); %>
+        <% } catch (error) { %>
+          <p>Une erreur est survenue lors de l'affichage des événements.</p>
+        <% } %>
+      </div>
+      
+      <a href="/events/all" class="view-all-button">Voir tous les événements</a>
+    <% } else { %>
+      <p>Aucun événement à venir pour le moment.</p>
+    <% } %>
+  </div>
+</body>
+</html>

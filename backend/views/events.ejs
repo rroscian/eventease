@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tous les Événements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .search-group {
+            margin-bottom: 15px;
+        }
+
+        .search-group input,
+        .search-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .event-info {
+            padding: 15px;
+        }
+
+        .event-title {
+            font-size: 1.2em;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .event-details {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .filter-buttons {
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        .filter-buttons button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .filter-buttons button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="filters">
+        <div class="search-group">
+            <input type="text" id="search" placeholder="Rechercher un événement...">
+        </div>
+        <div class="search-group">
+            <select id="category">
+                <option value="">Toutes les catégories</option>
+                <% ['Concert', 'Festival', 'Théâtre', 'Sport', 'Exposition', 'Conférence', 'Autre'].forEach(cat => { %>
+                    <option value="<%= cat %>"><%= cat %></option>
+                <% }); %>
+            </select>
+        </div>
+        <div class="search-group">
+            <input type="date" id="date" placeholder="Date">
+        </div>
+        <div class="filter-buttons">
+            <button onclick="applyFilters()">Appliquer les filtres</button>
+        </div>
+    </div>
+
+    <div class="events-grid">
+        <% events.forEach(event => { %>
+        
+            <a href="/events/<%= event._id %>" class="event-card" style="text-decoration: none; display: block; color: inherit;">
+                <img src="<%= event.image %>" alt="<%= event.title %>" class="event-image">
+                <div class="event-info">
+                    <h3 class="event-title"><%= event.title %></h3>
+                    <div class="event-details">
+                        <p><strong>Date:</strong> <%= new Date(event.date).toLocaleDateString('fr-FR') %></p>
+                        <p><strong>Lieu:</strong> <%= event.location %></p>
+                        <p><strong>Catégorie:</strong> <%= event.category %></p>
+                    </div>
+                </div>
+            </a>
+        <% }); %>
+    </div>
+
+    <script>
+        function applyFilters() {
+            const search = document.getElementById('search').value;
+            const category = document.getElementById('category').value;
+            const date = document.getElementById('date').value;
+            
+            let url = '/events/all?';
+            if (search) url += `search=${search}&`;
+            if (category) url += `category=${category}&`;
+            if (date) url += `date=${date}`;
+            
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

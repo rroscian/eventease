@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes réservations</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      margin-bottom: 30px;
+    }
+    
+    .reservations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .reservation-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    .upcoming {
+      background-color: #007bff;
+    }
+    
+    .past {
+      background-color: #6c757d;
+    }
+    
+    .card-body {
+      padding: 15px;
+    }
+    
+    .qr-code-container {
+      text-align: center;
+      margin: 15px 0;
+    }
+    
+    .qr-code {
+      max-width: 150px;
+      margin: 0 auto;
+    }
+    
+    .qr-message {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    .view-event-btn {
+      display: block;
+      text-align: center;
+      padding: 8px;
+      background-color: #f8f9fa;
+      border: none;
+      border-top: 1px solid #ddd;
+      text-decoration: none;
+      color: #212529;
+    }
+    
+    .view-event-btn:hover {
+      background-color: #e9ecef;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mes réservations</h1>
+  
+  <div class="reservations-grid">
+    <% if (reservations && reservations.length > 0) { %>
+      <% reservations.forEach(reservation => { 
+        const isUpcoming = new Date(reservation.event.date) > new Date();
+      %>
+        <div class="reservation-card">
+          <div class="card-header <%= isUpcoming ? 'upcoming' : 'past' %>">
+            <%= isUpcoming ? 'Événement à venir' : 'Événement passé' %>
+          </div>
+          <div class="card-body">
+            <h3><%= reservation.event.title %></h3>
+            <p><strong>Date:</strong> <%= new Date(reservation.event.date).toLocaleDateString('fr-FR') %></p>
+            <p><strong>Lieu:</strong> <%= reservation.event.location %></p>
+            <p><strong>Réservé le:</strong> <%= new Date(reservation.reservationDate).toLocaleDateString('fr-FR') %></p>
+            
+            <% if (isUpcoming && reservation.qrCode) { %>
+              <div class="qr-code-container">
+                <!-- Créer une route pour servir le QR code -->
+                <img src="/qrcode/<%= reservation.qrCode %>" alt="QR Code" class="qr-code">
+                <p class="qr-message">Présentez ce QR code à l'entrée</p>
+              </div>
+            <% } %>
+          </div>
+          <a href="/events/<%= reservation.event._id %>" class="view-event-btn">Voir l'événement</a>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>Vous n'avez pas encore de réservations.</p>
+    <% } %>
+  </div>
+</body>
+</html>

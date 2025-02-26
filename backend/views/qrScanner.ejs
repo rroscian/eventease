@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scanner QR Code</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #reader {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .scanning-status {
+      text-align: center;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Inclure votre navbar ici -->
+  
+  <div class="container py-5">
+    <h1 class="mb-4 text-center">Scanner un QR Code</h1>
+    
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <p class="text-center mb-4">Pointez la caméra vers le QR code pour vérifier le billet</p>
+            
+            <div id="reader"></div>
+            
+            <div class="scanning-status">
+              <div class="spinner-border text-primary" role="status" id="loadingIndicator">
+                <span class="visually-hidden">Chargement...</span>
+              </div>
+              <p id="statusMessage">Initialisation de la caméra...</p>
+            </div>
+            
+            <div class="text-center mt-4">
+              <button class="btn btn-outline-secondary" id="cancelButton">Annuler</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const html5QrCode = new Html5Qrcode("reader");
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      const statusMessage = document.getElementById('statusMessage');
+      const cancelButton = document.getElementById('cancelButton');
+      
+      // Configuration du scanner
+      const config = { fps: 10, qrbox: 250 };
+      
+      // Démarrer la caméra
+      html5QrCode.start(
+        { facingMode: "environment" }, // Utiliser la caméra arrière si disponible
+        config,
+        onScanSuccess,
+        onScanFailure
+      ).then(() => {
+        // Caméra démarrée avec succès
+        loadingIndicator.style.display = 'none';
+        statusMessage.textContent = 'Scanner un QR code...';
+      }).catch(err => {
+        // Erreur lors du démarrage de la caméra
+        loadingIndicator.style.display = 'none';
+        statusMessage.textContent = 'Erreur: ' + err;
+        statusMessage.classList.add('text-danger');
+      });
+      
+      // Fonction appelée lors d'un scan réussi
+      function onScanSuccess(decodedText, decodedResult) {
+        // Arrêter le scanner
+        html5QrCode.stop();
+        
+        // Afficher un message de succès
+        statusMessage.textContent = 'QR code détecté! Redirection...';
+        statusMessage.classList.add('text-success');
+        
+        // Rediriger vers l'URL du QR code
+        setTimeout(() => {
+          window.location.href = decodedText;
+        }, 1000);
+      }
+      
+      // Fonction appelée en cas d'échec du scan
+      function onScanFailure(error) {
+        // Nous n'affichons pas ces erreurs car elles se produisent constamment
+        // quand aucun QR code n'est détecté
+      }
+      
+      // Bouton pour annuler le scan
+      cancelButton.addEventListener('click', function() {
+        html5QrCode.stop().then(() => {
+          window.location.href = '/organizer/profile';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
